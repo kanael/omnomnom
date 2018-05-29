@@ -1,0 +1,7 @@
+{
+  "name": "omnomnom",
+  "short_name": "omnomnom",
+  "description": "A new way to find where to eat !",
+  "start_url": "/",
+  "display": "standalone"
+}

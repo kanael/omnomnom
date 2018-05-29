@@ -1,0 +1,11 @@
+{
+  "name": "omnomnom",
+  "description": "A new way to find where to eat !",
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0"
+  },
+  "devDependencies": {
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "wct-browser-legacy": "^1.0.0"
+  }
+}
