@@ -2,15 +2,13 @@
 <html>
   <head>
     <title>Omnomnom !</title>
-    <!-- 1. Load webcomponents-lite.min.js for polyfill support. -->
     <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
 
-    <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-
-    <!-- 2. Use an HTML Import to bring in some elements. -->
     <link rel="import" href="bower_components/paper-search/paper-search-bar.html">
     <link rel="import" href="bower_components/paper-button/paper-button.html">
     <link rel="import" href="bower_components/paper-input/paper-input.html">
+    <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
   </head>
   <body>
     <!-- 3. Declare the element. Configure using its attributes. -->
@@ -57,6 +55,7 @@
       <h3>
         Suggestions
       </h3>
+    </div>
 
     <script>
       var frequentDishes = ["Hamburger", "Schnitzel"];
@@ -68,6 +67,35 @@
 
     </script>
 
-    </div>
+
+    <x-foo></x-foo>
+
+    <dom-module id="x-foo">
+      <template>
+        <iron-ajax
+            auto
+            url="http://127.0.0.1:5000/search?"
+            params='{"q":""}'
+            handle-as="json"
+            on-response="_onResponse"
+            debounce-duration="300">
+        </iron-ajax>
+      </template>
+    </dom-module>
+
+    <div id="results"></div>
+
+    <script>
+      HTMLImports.whenReady(() => {
+      Polymer({
+        is: 'x-foo',
+        _onResponse: function(e) {
+          const resp = e.detail.response;
+          document.getElementById('results').innerHTML = `<h1>` +  JSON.stringify(resp) + `</h1>`;
+        }
+      });
+    });
+
+    </script>
   </body>
 </html>
