@@ -9,12 +9,9 @@
     <link rel="import" href="bower_components/paper-button/paper-button.html">
     <link rel="import" href="bower_components/paper-input/paper-input.html">
     <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+
   </head>
   <body>
-    <!-- 3. Declare the element. Configure using its attributes. -->
-    <paper-input label="Your name here"></paper-input>
-    <paper-button>Say Hello</paper-button>
-    <div id="greeting"></div>
 
     <dom-bind>
       <template>
@@ -27,19 +24,6 @@
         </paper-search-bar>
       </template>
     </dom-bind>
-
-    <script>
-      // To ensure that elements are ready on polyfilled browsers,
-      // wait for WebComponentsReady.
-      document.addEventListener('WebComponentsReady', function() {
-        var input = document.querySelector('paper-input');
-        var button = document.querySelector('paper-button');
-        var greeting = document.getElementById("greeting");
-        button.addEventListener('click', function() {
-          greeting.textContent = 'Hello, ' + input.value;
-        });
-      });
-    </script>
 
     <script>
       var scope = document.querySelector("dom-bind");
@@ -68,9 +52,9 @@
     </script>
 
 
-    <x-foo></x-foo>
+    <ajax-dom></ajax-dom>
 
-    <dom-module id="x-foo">
+    <dom-module id="ajax-dom">
       <template>
         <iron-ajax
             auto
@@ -88,14 +72,30 @@
     <script>
       HTMLImports.whenReady(() => {
       Polymer({
-        is: 'x-foo',
+        is: 'ajax-dom',
         _onResponse: function(e) {
           const resp = e.detail.response;
-          document.getElementById('results').innerHTML = `<h1>` +  JSON.stringify(resp) + `</h1>`;
+          console.log(resp)
+
+          results = ""
+          results += "<table border='1'>"
+          for (row in resp) {
+            results += "<tr>"
+            console.log(resp[row])
+            for (col in resp[row]) {
+              console.log(resp[row][col])
+              results += "<td>" + resp[row][col] + "</td>";
+            }
+            results += "</tr>"
+          }
+          results += "</table>"
+
+          document.getElementById('results').innerHTML = results;
         }
       });
     });
 
     </script>
+
   </body>
 </html>
