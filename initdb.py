@@ -5,7 +5,7 @@ db.connect()
 db.create_tables([Restaurant, Dish])
 
 import json
-restaurants = json.load(open("/Users/kanael/projects/omnomnom/all.json"))
+restaurants = json.load(open("./all.json"))
 
 for r in restaurants:
     print(r["id"])
