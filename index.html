@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title>iron-ajax</title>
+      <title>Omnomnom !</title>
       <link rel = "import"
          href = "https://cdn.rawgit.com/download/polymer-cdn/1.0.1/lib/paper-input/paper-input.html">
       <link rel = "import"
@@ -10,6 +10,8 @@
 
    <body>
       <dom-module id = "data-bind">
+
+        <h1>Welcome to Omnomnom !</h1>
 
          <template>
             <paper-input label = "Enter a dish... (f.e Schnitzel)" id = "input" value = "{{q::input}}"
@@ -38,9 +40,7 @@
                     results += "<table border='1'>"
                     for (row in response) {
                       results += "<tr>"
-                      console.log(response[row])
                       for (col in response[row]) {
-                        console.log(response[row][col])
                         results += "<td>" + response[row][col] + "</td>";
                       }
                       results += "</tr>"
@@ -54,8 +54,7 @@
                     return {"q":this.$.input.value};
                   },
                   trigger: function() {
-                    console.log("trigger");
-                    console.log(this.$.ajaxSearch);
+                    console.log("triggering generateRequest");
                     this.$.ajaxSearch.params = {"q":this.$.input.value};
                     this.$.ajaxSearch.generateRequest();
                   }
