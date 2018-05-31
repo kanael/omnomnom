@@ -1,101 +1,69 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Omnomnom !</title>
-    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+   <head>
+      <title>iron-ajax</title>
+      <link rel = "import"
+         href = "https://cdn.rawgit.com/download/polymer-cdn/1.0.1/lib/paper-input/paper-input.html">
+      <link rel = "import"
+         href = "https://cdn.rawgit.com/download/polymer-cdn/1.0.1/lib/iron-ajax/iron-ajax.html">
+   </head>
 
-    <link rel="import" href="bower_components/paper-search/paper-search-bar.html">
-    <link rel="import" href="bower_components/paper-button/paper-button.html">
-    <link rel="import" href="bower_components/paper-input/paper-input.html">
-    <link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+   <body>
+      <dom-module id = "data-bind">
 
-  </head>
-  <body>
+         <template>
+            <paper-input label = "Enter a dish... (f.e Schnitzel)" id = "input" value = "{{q::input}}"
+              on-change="trigger"
+              autofocus>
+            </paper-input>
+            <p>Searching for: <b>{{q}}</b></p>
 
-    <dom-bind>
-      <template>
-        <paper-search-bar
-          query="{{query}}"
-          placeholder="Enter a dish... (f.e Schnitzel)"
-          nr-selected-filters="3"
-          on-paper-search-search="search"
-          on-paper-search-filter="filter">
-        </paper-search-bar>
-      </template>
-    </dom-bind>
+            <div id=results></div>
 
-    <script>
-      var scope = document.querySelector("dom-bind");
-      scope.search = function() {
-        alert("Searching for " + scope.query);
-      };
-      scope.filter = function() {
-        alert("Filter dialog");
-      };
-    </script>
+            <iron-ajax auto
+              id="ajaxSearch"
+              url="http://127.0.0.1:5000/search"
+              params = "{{ getParams() }}" handle-as = "json" on-response = "_handleResponse"
+              debounce-duration = "500">
+            </iron-ajax>
+         </template>
 
-    <div id="frequent">
-      <h3>
-        Suggestions
-      </h3>
-    </div>
+         <script>
+            (function () {
+               Polymer ({
+                  is: 'data-bind',
+                  _handleResponse: function(event, request) {
+                    var response = request.response;
+                    results = ""
+                    results += "<table border='1'>"
+                    for (row in response) {
+                      results += "<tr>"
+                      console.log(response[row])
+                      for (col in response[row]) {
+                        console.log(response[row][col])
+                        results += "<td>" + response[row][col] + "</td>";
+                      }
+                      results += "</tr>"
+                    }
+                    results += "</table>"
+                    document.getElementById('results').innerHTML = results;
+                  },
+                  getParams: function() {
+                    console.log("getParams");
+                    console.log(this.$.input.value);
+                    return {"q":this.$.input.value};
+                  },
+                  trigger: function() {
+                    console.log("trigger");
+                    console.log(this.$.ajaxSearch);
+                    this.$.ajaxSearch.params = {"q":this.$.input.value};
+                    this.$.ajaxSearch.generateRequest();
+                  }
+               });
+            })();
+         </script>
+      </dom-module>
 
-    <script>
-      var frequentDishes = ["Hamburger", "Schnitzel"];
-      var links = ""
-      for (var i = 0; i < frequentDishes.length; i++) {
-          links = links + " <a href='" + frequentDishes[i] + "'>"+ frequentDishes[i] + "</a>";
-      }
-      document.getElementById('frequent').innerHTML = links;
-
-    </script>
-
-
-    <ajax-dom></ajax-dom>
-
-    <dom-module id="ajax-dom">
-      <template>
-        <iron-ajax
-            auto
-            url="http://127.0.0.1:5000/search?"
-            params='{"q":""}'
-            handle-as="json"
-            on-response="_onResponse"
-            debounce-duration="300">
-        </iron-ajax>
-      </template>
-    </dom-module>
-
-    <div id="results"></div>
-
-    <script>
-      HTMLImports.whenReady(() => {
-      Polymer({
-        is: 'ajax-dom',
-        _onResponse: function(e) {
-          const resp = e.detail.response;
-          console.log(resp)
-
-          results = ""
-          results += "<table border='1'>"
-          for (row in resp) {
-            results += "<tr>"
-            console.log(resp[row])
-            for (col in resp[row]) {
-              console.log(resp[row][col])
-              results += "<td>" + resp[row][col] + "</td>";
-            }
-            results += "</tr>"
-          }
-          results += "</table>"
-
-          document.getElementById('results').innerHTML = results;
-        }
-      });
-    });
-
-    </script>
-
-  </body>
+      <data-bind></data-bind>
+   </body>
 </html>
