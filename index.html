@@ -6,6 +6,7 @@
          href = "https://cdn.rawgit.com/download/polymer-cdn/1.0.1/lib/paper-input/paper-input.html">
       <link rel = "import"
          href = "https://cdn.rawgit.com/download/polymer-cdn/1.0.1/lib/iron-ajax/iron-ajax.html">
+      <link rel="import" href="bower_components/aha-table/src/aha-table.html">
    </head>
 
    <body>
@@ -19,8 +20,7 @@
               autofocus>
             </paper-input>
             <p>Searching for: <b>{{q}}</b></p>
-
-            <div id=results></div>
+            <aha-table id="results"></aha-table>
 
             <iron-ajax auto
               id="ajaxSearch"
@@ -30,23 +30,13 @@
             </iron-ajax>
          </template>
 
-         <script>
+        <script>
             (function () {
                Polymer ({
                   is: 'data-bind',
                   _handleResponse: function(event, request) {
                     var response = request.response;
-                    results = ""
-                    results += "<table border='1'>"
-                    for (row in response) {
-                      results += "<tr>"
-                      for (col in response[row]) {
-                        results += "<td>" + response[row][col] + "</td>";
-                      }
-                      results += "</tr>"
-                    }
-                    results += "</table>"
-                    document.getElementById('results').innerHTML = results;
+                    document.getElementById("results").data = response;
                   },
                   getParams: function() {
                     console.log("getParams");
@@ -60,7 +50,8 @@
                   }
                });
             })();
-         </script>
+        </script>
+
       </dom-module>
 
       <data-bind></data-bind>
