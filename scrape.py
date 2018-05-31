@@ -60,4 +60,92 @@ def scrape_restaurants_pages():
         json.dump(info, open(filename, "w"))
 
 
-scrape_restaurants_pages()
+#scrape_restaurants_pages()
+
+def parse_price(s):
+    return float(s.replace('₪','').strip())
+
+def scrape_rest_menu(content):
+    import re
+    the_re = re.compile("(^\s*\d+\s*₪\s*$|^\s*₪\s*\d+\s*$)")
+
+    def price_pred(e):
+        return e.contents and bool(the_re.search(str(e.contents[0])))
+
+    def find_dish_name(e):
+        price_string = e.string
+        while True:
+#            print("checking: ", e)
+            for child in e.find_all():
+                s = child.string
+                if s and len(s) > 2 and s != price_string:
+#                    print("found: ", child.string)
+                    return s
+            e = e.parent
+
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(content, 'html.parser')
+    price_elements = soup.find_all(price_pred)
+    dishes = []
+    for e in price_elements:
+        if not e.string:
+            continue
+        dishes.append(dict(price=parse_price(e.string),
+                           name=find_dish_name(e)))
+    return dishes
+
+def scrape_mishlohim_menu(content):
+    tree = html.fromstring(content)
+    dishes = []
+    for e in tree.xpath('//*[@class="row-item"]'):
+        maybe_price = e.xpath('.//p[@class="price"]/text()')
+        if (len(maybe_price) == 0):
+            continue
+        dishes.append(dict(price=parse_price(maybe_price[0]),
+                           name=e.xpath('.//*[@class="title"]/text()')[0]))
+    return dishes
+
+def scrape_menu(url):
+    if url.startswith("/"):
+        url = "http://rest.co.il" + url
+    print("Fetching menu page %s..." % (url, ))
+    try:
+        page = requests.get(url)
+    except:
+        print("failed fetching from %s" % (url, ))
+        return dict(url=url, dishes=[])
+    print("Fetched")
+    try:
+        content = page.content.decode(page.apparent_encoding)
+    except:
+        print("failed decoding content of %s" % (url, ))
+        return dict(url=url, dishes=[])
+    if "mishlohim" in url:
+        dishes = scrape_mishlohim_menu(content)
+    else:
+        dishes = scrape_rest_menu(content)
+    return dict(url=url, dishes=dishes)
+
+def scrape_all_menues():
+    for restaurant_file in glob.glob("scraps/restaurants/*"):
+        menu_file = restaurant_file.replace("restaurants", "menus")
+        if os.path.isfile(menu_file):
+            print ("%s already exists" % (menu_file, ))
+            continue
+        info = json.load(open(restaurant_file))
+        if "menu_url" not in info:
+            print ("%s does not have a menu url" % (restaurant_file, ))
+            continue
+        url = info["menu_url"]
+        if url.endswith("pdf"):
+            print ("%s has a pdf menu: %s" % (restaurant_file, url))
+            continue
+        menu = scrape_menu(url)
+        for dish in menu["dishes"]:
+            print("%5s %60s" % (dish["price"], dish["name"]))
+        print()
+        json.dump(menu, open(menu_file, "w"))
+
+#print(scrape_mishlohim_menu())
+#print(scrape_rest_menu())
+scrape_all_menues()

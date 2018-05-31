@@ -2,3 +2,4 @@ __pycache__/
 omnomnom.db
 node_modules
 bower_components
+scraps/
