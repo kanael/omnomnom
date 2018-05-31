@@ -14,5 +14,11 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "paper-search": "^2.0.9",
+    "paper-input": "^2.2.2",
+    "paper-button": "^2.1.1",
+    "iron-ajax": "^2.1.3"
+  }
 }
