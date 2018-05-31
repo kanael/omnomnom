@@ -1,20 +1,57 @@
 <!doctype html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <title>Omnomnom !</title>
+    <!-- 1. Load webcomponents-lite.min.js for polyfill support. -->
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.js">
+    </script>
 
-    <title>omnomnom</title>
-    <meta name="description" content="A new way to find where to eat !">
+    <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 
-    <!-- See https://goo.gl/OOhYW5 -->
-    <link rel="manifest" href="/manifest.json">
-
-    <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-
-    <script type="module" src="/src/omnomnom-app/omnomnom-app.js"></script>
+    <!-- 2. Use an HTML Import to bring in some elements. -->
+    <link rel="import" href="bower_components/paper-search/paper-search-bar.html">
+    <link rel="import" href="bower_components/paper-button/paper-button.html">
+    <link rel="import" href="bower_components/paper-input/paper-input.html">
   </head>
   <body>
-    <omnomnom-app></omnomnom-app>
+    <!-- 3. Declare the element. Configure using its attributes. -->
+    <paper-input label="Your name here"></paper-input>
+    <paper-button>Say Hello</paper-button>
+    <div id="greeting"></div>
+
+    <dom-bind>
+      <template>
+        <paper-search-bar
+          query="{{query}}"
+          placeholder="Enter a dish... (f.e Schnitzel)"
+          nr-selected-filters="3"
+          on-paper-search-search="search"
+          on-paper-search-filter="filter">
+        </paper-search-bar>
+      </template>
+    </dom-bind>
+
+    <script>
+      // To ensure that elements are ready on polyfilled browsers,
+      // wait for WebComponentsReady.
+      document.addEventListener('WebComponentsReady', function() {
+        var input = document.querySelector('paper-input');
+        var button = document.querySelector('paper-button');
+        var greeting = document.getElementById("greeting");
+        button.addEventListener('click', function() {
+          greeting.textContent = 'Hello, ' + input.value;
+        });
+      });
+    </script>
+
+    <script>
+      var scope = document.querySelector("dom-bind");
+      scope.search = function() {
+        alert("Searching for " + scope.query);
+      };
+      scope.filter = function() {
+        alert("Filter dialog");
+      };
+    </script>
   </body>
 </html>
