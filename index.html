@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title>Omnomnom !</title>
+      <meta charset="utf-8" />
+      <title>אומנומנומ !</title>
       <link rel = "import"
          href = "https://cdn.rawgit.com/download/polymer-cdn/1.0.1/lib/paper-input/paper-input.html">
       <link rel = "import"
@@ -9,17 +10,17 @@
       <link rel="import" href="bower_components/aha-table/src/aha-table.html">
    </head>
 
-   <body>
+   <body dir="rtl">
       <dom-module id = "data-bind">
 
-        <h1>Welcome to Omnomnom !</h1>
+        <h1>אומנומנומ לשירותכם</h1>
 
          <template>
-            <paper-input label = "Enter a dish... (f.e Schnitzel)" id = "input" value = "{{q::input}}"
+            <paper-input label = "הכנס מנה (לדוגמה: המבורגר)" id = "input" value = "{{q::input}}"
               on-change="trigger"
               autofocus>
             </paper-input>
-            <p>Searching for: <b>{{q}}</b></p>
+            <p>מחפשת: <b>{{q}}</b></p>
             <aha-table id="results"></aha-table>
 
             <iron-ajax auto
