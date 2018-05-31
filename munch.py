@@ -5,7 +5,6 @@ def parse_price(s):
 
 def munch_restaurants():
     restaurants = []
-    all_dishes = []
     for restaurant_file in glob.glob("scraps/restaurants/*"):
         menu_file = restaurant_file.replace("restaurants", "menus")
         restaurant_id = restaurant_file.replace("restaurants", "")
@@ -15,6 +14,7 @@ def munch_restaurants():
             print ("no menu")
             continue
         restaurant_info["id"] = restaurant_id
+        restaurant_info["dishes"] = []
         restaurants.append(restaurant_info)
 
         menu_info = json.load(open(menu_file))
@@ -26,7 +26,7 @@ def munch_restaurants():
             print("#%s" % (i, ))
             dish["price"] = parse_price(dish["price"])
             dish["restaurant_id"] = restaurant_id
-            all_dishes.append(dish)
-    return dict(restaurants=restaurants, dishes=dishes)
+            restaurant_info["dishes"].append(dish)
+    return restaurants
 
 json.dump(munch_restaurants(), open("all.json", "w"))

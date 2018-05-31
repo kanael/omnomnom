@@ -10,6 +10,9 @@ class BaseModel(Model):
 class Restaurant(BaseModel):
     name = CharField()
     address = CharField()
+    phone = CharField()
+    hours = CharField()
+    url = CharField()
 
 class Dish(BaseModel):
     name = CharField()
