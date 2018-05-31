@@ -53,5 +53,22 @@
         alert("Filter dialog");
       };
     </script>
+
+    <div id="frequent">
+      <h3>
+        Suggestions
+      </h3>
+
+    <script>
+      var frequentDishes = ["Hamburger", "Schnitzel"];
+      var links = ""
+      for (var i = 0; i < frequentDishes.length; i++) {
+          links = links + " <a href='" + frequentDishes[i] + "'>"+ frequentDishes[i] + "</a>";
+      }
+      document.getElementById('frequent').innerHTML = links;
+
+    </script>
+
+    </div>
   </body>
 </html>
