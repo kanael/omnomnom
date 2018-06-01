@@ -80,19 +80,14 @@
              </aha-table>
            </div>
       <script>
-        function geocodeAddress(geocoder, resultsMap, address) {
+        function geocodeAddress(geocoder, map, address) {
           geocoder.geocode({'address': address}, function(results, status) {
             console.log(address)
             console.log(results)
 
             if (status === 'OK') {
-              var position = {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()}
+              var position = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng())
               console.log(position)
-              var map = new google.maps.Map(resultsMap, {
-                zoom: 15,
-                center: position
-              });
-              console.log(map)
               var marker = new google.maps.Marker({
                 map: map,
                 position: position
@@ -169,7 +164,12 @@
 
                 current_addresses.push(address);
                 console.log(address);
-                geocodeAddress(geocoder, map, address);
+                var resultsMap = new google.maps.Map(map, {
+                  zoom: 15,
+                  center: new google.maps.LatLng(32.08, 34.78)
+                });
+
+                geocodeAddress(geocoder, resultsMap, address);
               }
             }
           });
