@@ -58,7 +58,7 @@ db.connect()
 @app.route('/search')
 @crossdomain(origin='*')
 def search():
-    dishes = Dish.select().where(Dish.name.contains(request.args.get("q")))[:100]
+    dishes = Dish.select().where(Dish.name.contains(request.args.get("q")))[:10]
     data = [dict(name=d.name, price=float(d.price),
                  restaurant_name=d.restaurant.name,
                  restaurant_address=d.restaurant.address,
