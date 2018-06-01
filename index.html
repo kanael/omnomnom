@@ -15,12 +15,14 @@
        good-map {
          display: block;
          flex: 1 1 70%;
+         max-height: 500px;
        }
        .results {
          display: flex;
          flex-direction: row;
          align-items: stretch;
          min-height: 500px;
+         margin: 30px;
        }
        .table_wrapper {
          flex: 1 1 30%;
@@ -29,9 +31,29 @@
          display: flex;
          justify-content: space-around;
        }
+       .input {
+         margin-left: 20px;
+         margin-right: 20px;
+       }
+       body {
+         background-image: url("src/omnomnom-app/Background.jpg");
+         /* background-color: #cccccc; */
+       }
+       body::after {
+         content: "";
+         background: #ffffff;
+         opacity: 0.9;
+         top: 0;
+         left: 0;
+         right: 0;
+         height: 2000px;
+         position: absolute;
+         z-index: -1;
+       }
       </style>
    </head>
    <body dir="rtl" style="font-family: 'Varela Round', 'sans-serif';">
+     <div class="screen"></div>
      <dom-module id = "data-bind">
 
        <div class="title">
@@ -41,9 +63,11 @@
          </div>
        </div>
        <template>
-         <paper-input label = "הכנס מנה (לדוגמה: המבורגר)" id = "input" value = "{{q::input}}"
-                      on-change="trigger"
-                      autofocus>
+         <paper-input
+           class = "input"
+           label = "הכנס מנה (לדוגמה: המבורגר)" id = "input" value = "{{q::input}}"
+           on-change="trigger"
+           autofocus>
          </paper-input>
          <div class="results">
            <div class="table_wrapper">
