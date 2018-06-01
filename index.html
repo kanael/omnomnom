@@ -23,7 +23,11 @@
               autofocus>
             </paper-input>
             <div id="looking"></div>
-            <aha-table id="results"></aha-table>
+            <aha-table id="results" pagesize="20">
+              <aha-column name="name" label="שם המנה" type="string" sortable></aha-column>
+              <aha-column name="price" label="מחיר" type="string" sortable></aha-column>
+              <aha-column name="restaurant" label="לאן ללכת" type="string" sortable></aha-column>
+            </aha-table>
 
             <iron-ajax auto
               id="ajaxSearch"
@@ -39,6 +43,10 @@
                   is: 'data-bind',
                   _handleResponse: function(event, request) {
                     var response = request.response;
+                    if (!response) {
+                      console.log("No results")
+                      return
+                    }
                     var looking = this.$.input.value
                     if (!looking) {
                       looking = "הכל"
