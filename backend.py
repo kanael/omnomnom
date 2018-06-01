@@ -59,7 +59,13 @@ db.connect()
 @crossdomain(origin='*')
 def search():
     dishes = Dish.select().where(Dish.name.contains(request.args.get("q")))
-    data = [dict(name=d.name, price=float(d.price), restaurant=d.restaurant.name) for d in dishes]
+    data = [dict(name=d.name, price=float(d.price),
+                 restaurant_name=d.restaurant.name,
+                 restaurant_address=d.restaurant.address,
+                 restaurant_phone=d.restaurant.phone,
+                 restaurant_hours=d.restaurant.hours,
+                 restaurant_url=d.restaurant.url)
+            for d in dishes]
     print(data)
     return json.dumps(data)
 
