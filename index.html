@@ -4,73 +4,98 @@
       <meta charset="utf-8" />
       <title>אומנומנומ !</title>
       <link rel = "import"
-         href = "https://cdn.rawgit.com/download/polymer-cdn/1.0.1/lib/paper-input/paper-input.html">
+            href = "https://cdn.rawgit.com/download/polymer-cdn/1.0.1/lib/paper-input/paper-input.html">
       <link rel = "import"
-         href = "https://cdn.rawgit.com/download/polymer-cdn/1.0.1/lib/iron-ajax/iron-ajax.html">
+            href = "https://cdn.rawgit.com/download/polymer-cdn/1.0.1/lib/iron-ajax/iron-ajax.html">
       <link rel="import" href="bower_components/aha-table/src/aha-table.html">
       <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+      <link rel="import" href="bower_components/good-map/good-map.html">
 
+      <style>
+       good-map {
+         display: block;
+         flex: 1 1 70%;
+       }
+       .results {
+         display: flex;
+         flex-direction: row;
+         align-items: stretch;
+         min-height: 500px;
+       }
+       .table_wrapper {
+         flex: 1 1 30%;
+       }
+      </style>
    </head>
-
    <body dir="rtl" style="font-family: 'Varela Round', 'sans-serif';">
-      <dom-module id = "data-bind">
+     <dom-module id = "data-bind">
 
-        <h1>אומנומנומ לשירותכם 🍽</h1>
-        <h3>מה בא לכם לאכול? 🍝🍔🍕🌭🌯🍜</h3>
+       <div class="title">
+         <h1>אומנומנומ לשירותכם 🍽</h1>
+         <h3>מה בא לכם לאכול? 🍝🍔🍕🌭🌯🍜</h3>
+       </div>
+       <template>
+         <paper-input label = "הכנס מנה (לדוגמה: המבורגר)" id = "input" value = "{{q::input}}"
+                      on-change="trigger"
+                      autofocus>
+         </paper-input>
+         <div class="results">
+           <div class="table_wrapper">
+             <div id="looking"></div>
+             <aha-table id="results" pagesize="20">
+               <aha-column name="name" label="שם המנה" type="string" sortable></aha-column>
+               <aha-column name="price" label="מחיר" type="string" sortable></aha-column>
+               <aha-column name="restaurant" label="לאן ללכת" type="string" sortable></aha-column>
+             </aha-table>
+           </div>
+           <good-map
+             class="map"
+             api-key="AIzaSyB9RjTb633nEWJZ3XTOQwXumyIhymtkGMU"
+             latitude="32.08"
+             longitude="34.78" zoom="15"</good-map>
+         </div>
+         <iron-ajax auto
+                    id="ajaxSearch"
+                    url="http://127.0.0.1:5000/search"
+                    params = "{{ getParams() }}" handle-as = "json" on-response = "_handleResponse"
+                    debounce-duration = "500">
+         </iron-ajax>
+       </template>
 
-         <template>
-            <paper-input label = "הכנס מנה (לדוגמה: המבורגר)" id = "input" value = "{{q::input}}"
-              on-change="trigger"
-              autofocus>
-            </paper-input>
-            <div id="looking"></div>
-            <aha-table id="results" pagesize="20">
-              <aha-column name="name" label="שם המנה" type="string" sortable></aha-column>
-              <aha-column name="price" label="מחיר" type="string" sortable></aha-column>
-              <aha-column name="restaurant" label="לאן ללכת" type="string" sortable></aha-column>
-            </aha-table>
+       <script>
+        (function () {
+          Polymer ({
+            is: 'data-bind',
+            _handleResponse: function(event, request) {
+              var response = request.response;
+              if (!response) {
+                console.log("No results")
+                return
+              }
+              var looking = this.$.input.value
+              if (!looking) {
+                looking = "הכל"
+              }
+              document.getElementById("looking").innerHTML = "<p>מחפשת: <b>" + looking + "</b></p>"
+              document.getElementById("results").data = response;
+            },
+            getParams: function() {
+              console.log("getParams");
+              console.log(this.$.input.value);
+              return {"q":this.$.input.value};
+            },
+            trigger: function() {
+              console.log("triggering generateRequest");
+              this.$.ajaxSearch.params = {"q":this.$.input.value};
+              this.$.ajaxSearch.generateRequest();
+            }
+          });
+        })();
+       </script>
 
-            <iron-ajax auto
-              id="ajaxSearch"
-              url="http://127.0.0.1:5000/search"
-              params = "{{ getParams() }}" handle-as = "json" on-response = "_handleResponse"
-              debounce-duration = "500">
-            </iron-ajax>
-         </template>
+     </dom-module>
 
-        <script>
-            (function () {
-               Polymer ({
-                  is: 'data-bind',
-                  _handleResponse: function(event, request) {
-                    var response = request.response;
-                    if (!response) {
-                      console.log("No results")
-                      return
-                    }
-                    var looking = this.$.input.value
-                    if (!looking) {
-                      looking = "הכל"
-                    }
-                    document.getElementById("looking").innerHTML = "<p>מחפשת: <b>" + looking + "</b></p>"
-                    document.getElementById("results").data = response;
-                  },
-                  getParams: function() {
-                    console.log("getParams");
-                    console.log(this.$.input.value);
-                    return {"q":this.$.input.value};
-                  },
-                  trigger: function() {
-                    console.log("triggering generateRequest");
-                    this.$.ajaxSearch.params = {"q":this.$.input.value};
-                    this.$.ajaxSearch.generateRequest();
-                  }
-               });
-            })();
-        </script>
+     <data-bind></data-bind>
 
-      </dom-module>
-
-      <data-bind></data-bind>
    </body>
 </html>
