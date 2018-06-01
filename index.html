@@ -151,9 +151,26 @@
             updateMapSearch: function(response) {
               var map = document.getElementById('good_map');
               var geocoder = new google.maps.Geocoder();
-              var address = response[0]['restaurant_address'];
-              console.log(address);
-              geocodeAddress(geocoder, map, address);
+
+              var i = 0
+              var max_length = response.length;
+              if (max_length > 10) {
+                max_length = 10
+              }
+              var current_addresses = new Array()
+              for (i = 0; i < max_length; i++) {
+                console.log(i)
+                var address = response[i]['restaurant_address'];
+                if (current_addresses.includes(address)) {
+                  console.log("Already marked address, skipping...")
+                  console.log(address, current_addresses)
+                  return;
+                }
+
+                current_addresses.push(address);
+                console.log(address);
+                geocodeAddress(geocoder, map, address);
+              }
             }
           });
         })();
