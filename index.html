@@ -25,14 +25,20 @@
        .table_wrapper {
          flex: 1 1 30%;
        }
+       .title {
+         display: flex;
+         justify-content: space-around;
+       }
       </style>
    </head>
    <body dir="rtl" style="font-family: 'Varela Round', 'sans-serif';">
      <dom-module id = "data-bind">
 
        <div class="title">
-         <h1>אומנומנומ לשירותכם 🍽</h1>
-         <h3>מה בא לכם לאכול? 🍝🍔🍕🌭🌯🍜</h3>
+         <div>
+           <h1>אומנומנומ לשירותכם 🍽</h1>
+           <h3>מה בא לכם לאכול? 🍝🍔🍕🌭🌯🍜</h3>
+         </div>
        </div>
        <template>
          <paper-input label = "הכנס מנה (לדוגמה: המבורגר)" id = "input" value = "{{q::input}}"
