@@ -108,7 +108,8 @@
           api-key="AIzaSyB9RjTb633nEWJZ3XTOQwXumyIhymtkGMU"
           latitude="32.08"
           longitude="34.78"
-          zoom="15"</good-map>
+          zoom="8">
+          </good-map>
          </div>
          <iron-ajax auto
                     id="ajaxSearch"
@@ -168,8 +169,9 @@
                 current_addresses.push(address);
                 console.log(address);
                 var resultsMap = new google.maps.Map(map, {
-                  zoom: 15,
-                  center: new google.maps.LatLng(32.08, 34.78)
+                  zoom: 8,
+                  center: new google.maps.LatLng(32.08, 34.78),
+                  mapTypeId: google.maps.MapTypeId.ROADMAP
                 });
 
                 geocodeAddress(geocoder, resultsMap, address);
