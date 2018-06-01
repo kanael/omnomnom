@@ -17,7 +17,7 @@
          flex: 1 1 70%;
          max-height: 500px;
        }
-       .results {
+       .table_div {
          display: flex;
          flex-direction: row;
          align-items: stretch;
@@ -69,9 +69,9 @@
            on-change="trigger"
            autofocus>
          </paper-input>
-         <div class="results">
+         <div id="looking"></div>
+         <div class="table_div">
            <div class="table_wrapper">
-             <div id="looking"></div>
              <aha-table id="results" pagesize="20">
                <aha-column name="name" label="שם המנה" type="string" sortable></aha-column>
                <aha-column name="price" label="מחיר" type="string" sortable></aha-column>
@@ -79,11 +79,38 @@
                <aha-column name="restaurant_address" label="איך מגיעים" type="string" sortable></aha-column>
              </aha-table>
            </div>
-           <good-map
-             class="map"
-             api-key="AIzaSyB9RjTb633nEWJZ3XTOQwXumyIhymtkGMU"
-             latitude="32.08"
-             longitude="34.78" zoom="15"</good-map>
+      <script>
+        function geocodeAddress(geocoder, resultsMap, address) {
+          geocoder.geocode({'address': address}, function(results, status) {
+            console.log(address)
+            console.log(results)
+
+            if (status === 'OK') {
+              var position = {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()}
+              console.log(position)
+              var map = new google.maps.Map(resultsMap, {
+                zoom: 15,
+                center: position
+              });
+              console.log(map)
+              var marker = new google.maps.Marker({
+                map: map,
+                position: position
+              });
+              console.log(marker);
+            } else {
+              alert('Geocode was not successful for the following reason: ' + status);
+            }
+          });
+        }
+      </script>
+         <good-map
+          id="good_map"
+          class="map"
+          api-key="AIzaSyB9RjTb633nEWJZ3XTOQwXumyIhymtkGMU"
+          latitude="32.08"
+          longitude="34.78"
+          zoom="15"</good-map>
          </div>
          <iron-ajax auto
                     id="ajaxSearch"
@@ -109,6 +136,7 @@
               }
               document.getElementById("looking").innerHTML = "<p>מחפשת: <b>" + looking + "</b></p>"
               document.getElementById("results").data = response;
+              this.updateMapSearch(response);
             },
             getParams: function() {
               console.log("getParams");
@@ -119,6 +147,13 @@
               console.log("triggering generateRequest");
               this.$.ajaxSearch.params = {"q":this.$.input.value};
               this.$.ajaxSearch.generateRequest();
+            },
+            updateMapSearch: function(response) {
+              var map = document.getElementById('good_map');
+              var geocoder = new google.maps.Geocoder();
+              var address = response[0]['restaurant_address'];
+              console.log(address);
+              geocodeAddress(geocoder, map, address);
             }
           });
         })();
